@@ -4,6 +4,7 @@ import asyncio
 
 from handlers.main_handlers import router as main_router
 from config import dp, bot
+from database.services import create_tables
 
 # Добавление маршрута с обработчиками к диспетчеру
 dp.include_routers(main_router,)
@@ -11,7 +12,7 @@ dp.include_routers(main_router,)
 
 async def main():
     # запуск функции с созданием всех таблиц в БД
-    # await create_tables()
+    await create_tables()
     # Удаление всех необработанных сообщений после отключения бота
     await bot.delete_webhook(drop_pending_updates=True)
     # Запуск обработчика всех событий

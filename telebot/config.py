@@ -21,5 +21,5 @@ settings = Settings()
 bot = Bot(token=os.getenv('BOT_TOKEN'))
 
 # Создание диспетчера для обработки событий
-dp = Dispatcher()
+dp = Dispatcher(name='BobrAi')
 

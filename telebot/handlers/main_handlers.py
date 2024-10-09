@@ -1,3 +1,6 @@
+import datetime
+import json
+
 from aiogram import Router, F, Bot
 
 from aiogram.filters import CommandStart, StateFilter, Command
@@ -6,6 +9,8 @@ from aiogram.types import Message
 
 from states.states import WeatherStages
 from utils.utils import get_city_coords, get_weather_forecast
+
+from database.crud import add_log
 
 router = Router()
 
@@ -25,7 +30,7 @@ async def cmd_start(message: Message, state: FSMContext):
     await state.set_state(WeatherStages.adding_city)
 
 
-# Обработчик команды с полученным городомэ
+# Обработчик команды с полученным городом
 @router.message(StateFilter(WeatherStages.adding_city))
 async def cmd_start(message: Message, state: FSMContext):
     city = message.text
@@ -40,6 +45,9 @@ async def cmd_start(message: Message, state: FSMContext):
                                       f'Влажность воздуха: {forecast.get('humidity')},\n'
                                       f'Описание погоды: {forecast.get('weather')}')
             await state.clear()
-            # add_data_to_db()
+            await add_log(tg_id=message.from_user.id,
+                          command=f'/weather {message.text}',
+                          created_at=datetime.datetime.now(),
+                          reply=json.dumps(forecast))
     else:
-        await message.answer(text=f'Произошла ошибка получения данных. Введите город заново.')
+        await message.answer(text=f'Произошла ошибка получения данных. Введите название города заново.')
