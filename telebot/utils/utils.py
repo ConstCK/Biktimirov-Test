@@ -1,11 +1,12 @@
 import datetime
 import requests
 
-from .constants import CITY_COORDS_URL, WEATHER_FORECAST_URL
+from .constants import CITY_COORDS_URL, WEATHER_FORECAST_URL, WEATHER_CODES
 
 
-def get_coords_by_city(city_name: str) -> dict[str, str] | None:
+def get_city_coords(city_name: str) -> dict[str, str] | None:
     # Получение координат города по его названию с API
+
     params = {
         'name': city_name,
         'language': 'ru',
@@ -26,25 +27,32 @@ def get_weather_forecast(lat: str, lon: str) -> dict[str, int] | None:
     params = {
         'latitude': lat,
         'longitude': lon,
-        'hourly': 'temperature_2m',
+        'current':["temperature_2m", "apparent_temperature", "relative_humidity_2m", "weather_code", "wind_speed_10m"],
         'forecast_days': 1,
     }
     try:
         response = requests.get(WEATHER_FORECAST_URL,
                                 params=params).json()
-        current_time = datetime.datetime.now().hour
-        # Список всех временных отрезков суток
-        time_list = response.get('hourly').get('time')
-        # Перевод в datetime формат
-        time_obj_list = list(map(lambda x: datetime.datetime.strptime(
-            x, '%Y-%m-%dT%H:%M'), time_list))
-        # Выбор часа больше текущего
-        forecast_time = [x for x in time_obj_list if x.hour > current_time][0]
-        forecast_hour = forecast_time.hour
-        # Выбор температуры на ближайший час
-        forecast_temp = response.get('hourly').get(
-            'temperature_2m')[forecast_hour]
-        return {'hour': forecast_hour, 'temperature': forecast_temp}
+        print('!!!',response)
+        forecast_temp = response.get('current').get(
+            'temperature_2m')
+        apparent_temperature = response.get('current').get(
+            'apparent_temperature')
+        wind_speed =response.get('current').get(
+            'wind_speed_10m')
+        humidity = response.get('current').get(
+            'relative_humidity_2m')
+        weather_code = response.get('current').get(
+            'weather_code')
+        weather = ''
+        for k, v in WEATHER_CODES.items():
+            if weather_code in k:
+                weather = v
+        return {'temperature': forecast_temp,
+                'apparent_temperature': apparent_temperature,
+                'wind_speed': wind_speed,
+                'humidity': humidity,
+                'weather': weather}
 
     except Exception:
         return None
