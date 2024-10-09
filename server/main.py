@@ -1,6 +1,7 @@
+
 from fastapi import FastAPI
 import uvicorn
-from fastapi_pagination import add_pagination, set_params, Params, resolve_params
+from fastapi_pagination import add_pagination, set_params, Params
 
 from config import settings
 from routers.logs import router as log_router
@@ -14,7 +15,7 @@ app = FastAPI(
 
 # Добавление пагинации в приложение
 add_pagination(app)
-set_params(Params(page=2, size=10))
+
 
 # Включение маршрутов в основное приложение
 app.include_router(log_router, tags=['logs'])

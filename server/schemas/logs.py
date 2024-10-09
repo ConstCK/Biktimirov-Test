@@ -3,7 +3,6 @@ import datetime
 from pydantic import BaseModel
 
 
-
 # Базовая схема для log
 class BaseLog(BaseModel):
     tg_id: int

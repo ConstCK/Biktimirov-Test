@@ -1,7 +1,6 @@
-from fastapi import APIRouter, status, Depends, Response
+from fastapi import APIRouter, status, Depends
 
 from crud.logs import LogService
-from fastapi_filter import FilterDepends
 from fastapi_pagination import Page
 
 from schemas.logs import Log
