@@ -11,16 +11,18 @@ app = FastAPI(
     title='Logs API',
     description='API для получение логов запросов к WEATHER API',
 )
+
+# Добавление пагинации в приложение
 add_pagination(app)
 set_params(Params(page=2, size=10))
-print(resolve_params())
+
 # Включение маршрутов в основное приложение
 app.include_router(log_router, tags=['logs'])
 
 
 @app.get('/', description='Приветственная надпись', )
 async def greetings() -> dict:
-    return {'message': 'Greetings, sir'}
+    return {'message': 'Добро пожаловать в API получения логов'}
 
 
 # Запуск сервера

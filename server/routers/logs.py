@@ -17,7 +17,8 @@ router = APIRouter(prefix='/api/v1/logs')
             summary='Получение логов указанного пользователя',
             response_model=Page[Log],
             status_code=status.HTTP_200_OK, name='get_all_logs_url',
-            responses={200: {'description': 'Успешное получение объектов'},
+            responses={status.HTTP_200_OK: {'description': 'Успешное получение объектов'},
+                       status.HTTP_422_UNPROCESSABLE_ENTITY: {'description': 'Ошибка валидации данных'}
                        }
             )
 async def get_all_logs(service: LogService = Depends(),
@@ -31,8 +32,10 @@ async def get_all_logs(service: LogService = Depends(),
             summary='Получение логов указанного пользователя',
             response_model=Page[Log],
             status_code=status.HTTP_200_OK, name='get_logs_url_by_user_id',
-            responses={200: {'description': 'Успешное получение объектов'}, }
+            responses={status.HTTP_200_OK: {'description': 'Успешное получение объектов'},
+                       status.HTTP_422_UNPROCESSABLE_ENTITY: {'description': 'Ошибка валидации данных'}}
             )
-async def get_all_logs_by_user_id(user_id: int, service: LogService = Depends()):
-    response = await service.get_logs_by_user(tg_id=user_id)
+async def get_all_logs_by_user_id(user_id: int, service: LogService = Depends(),
+                                  date_filter: LogFilter = Depends(LogFilter)):
+    response = await service.get_logs_by_user(date_filter, tg_id=user_id)
     return response

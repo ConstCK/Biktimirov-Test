@@ -3,7 +3,6 @@ from fastapi_pagination import Page, paginate
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-
 from models.logs import Log as LogTable
 
 from schemas.logs import Log
@@ -18,16 +17,14 @@ class LogService:
         self.db = session
 
     # Получение списка всех пользователей
-    async def get_logs(self, date_filter) -> Page[Log] | list:
+    async def get_logs(self, date_filter: LogFilter) -> Page[Log] | list:
+        query = date_filter.filter(select(LogTable))
 
-            query = date_filter.filter(select(LogTable))
-            # query = select(LogTable)
-            result = await self.db.execute(query)
-            return paginate(result.scalars().all())
-
+        result = await self.db.execute(query)
+        return paginate(result.scalars().all())
 
     # Получение списка всех пользователей
-    async def get_logs_by_user(self, tg_id: int) -> Page[Log] | list:
-        query = select(LogTable).where(LogTable.tg_id == tg_id)
+    async def get_logs_by_user(self,  date_filter: LogFilter, tg_id: int,) -> Page[Log] | list:
+        query = date_filter.filter(select(LogTable).where(LogTable.tg_id == tg_id))
         result = await self.db.execute(query)
         return paginate(result.scalars().all())
