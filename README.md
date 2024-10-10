@@ -15,7 +15,7 @@
 
 * Запустите сервер из каталога server (python main.py)
 * Запустите telebot из каталога telebot (python main.py)
-* Следуйте инструкциям в telegram в https://t.me/constantin_weather_bot
+* Запустите telegram в https://t.me/constantin_weather_bot и следуйте инструкциям
 
 ## EndPoints:
 
