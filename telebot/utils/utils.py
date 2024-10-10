@@ -43,9 +43,10 @@ def get_weather_forecast(lat: str, lon: str) -> dict[str, int] | None:
         weather_code = response.get('current').get(
             'weather_code')
         weather = ''
+        ind =''
         for k, v in WEATHER_CODES.items():
             if weather_code in k:
-                weather = v
+                weather = v[k.index(weather_code)]
         return {'temperature': forecast_temp,
                 'apparent_temperature': apparent_temperature,
                 'wind_speed': wind_speed,
